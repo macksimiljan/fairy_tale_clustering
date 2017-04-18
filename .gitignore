@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+/preprocessing/.idea/
+/preprocessing/.idea/modules.xml
+/preprocessing/.idea/misc.xml
+/preprocessing/.idea/workspace.xml
+/preprocessing/.idea/preprocessing.iml
+__pycache__/
