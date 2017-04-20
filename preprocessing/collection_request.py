@@ -10,8 +10,8 @@ class CollectionRequest(object):
             raise ValueError('URL cannot be empty!')
         self.__url = url
         self.__collection_name = collection_name
-        self.__pages_per_collection = {'grimm': (4, 204)}
-        self.__locking_per_collection = {'grimm': 10}
+        self.__pages_per_collection = {'grimm': (4, 204), 'andersen': (2, 113)}
+        self.__locking_per_collection = {'grimm': 10, 'andersen': 10}
 
     def run_scraping(self):
         pages = self.__pages_per_collection[self.__collection_name]
