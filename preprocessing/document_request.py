@@ -8,10 +8,23 @@ class DocumentRequest(object):
         if len(url) < 1:
             raise ValueError('URL cannot be empty!')
         self.url = url
+        self.tree = self.start_request()
+
+    def start_request(self):
+        raise NotImplementedError("To be implemented!")
+
+    def get_headline(self):
+        raise NotImplementedError("To be implemented!")
+
+    def get_text(self):
+        raise NotImplementedError("To be implemented!")
+
+
+class DocumentRequestGrimm(DocumentRequest):
 
     def start_request(self):
         page = requests.get(self.url)
-        self.tree = html.fromstring(page.content)
+        return html.fromstring(page.content)
 
     def get_headline(self):
         headlines = self.tree.xpath("//div[@id = 'gutenb']/h3/text()")
