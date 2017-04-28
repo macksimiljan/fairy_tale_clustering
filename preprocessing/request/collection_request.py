@@ -1,6 +1,6 @@
 from time import sleep
 
-from preprocessing.document_request import DocumentRequestGrimm
+from preprocessing.request.document_request import DocumentRequestGrimm
 
 
 class CollectionRequest(object):
@@ -10,8 +10,14 @@ class CollectionRequest(object):
             raise ValueError('URL cannot be empty!')
         self.__url = url
         self.__collection_name = collection_name
-        self.__pages_per_collection = {'grimm': (4, 204), 'andersen': (2, 113)}
-        self.__locking_per_collection = {'grimm': 10, 'andersen': 10}
+        self.__pages_per_collection = {'grimm': (4, 204), 'andersen': (2, 113),
+                                       'alberti': (3, 26), 'bechstein': (2, 48),
+                                       'dietrich': (4, 20), 'gelber': (2, 28),
+                                       'wilhelm': (3, 102), 'wenzig': (2, 35)}
+        self.__locking_per_collection = {'grimm': 10, 'andersen': 10,
+                                         'alberti': 5, 'bechstein': 7,
+                                         'dietrich': 7, 'gelber': 7,
+                                         'wilhelm': 10, 'wenzig': 7}
 
     def run_scraping(self):
         pages = self.__pages_per_collection[self.__collection_name]
