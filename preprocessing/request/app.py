@@ -6,9 +6,10 @@ collections = {'grimm': 'http://gutenberg.spiegel.de/buch/kinder-und-hausmarchen
                'gelber': 'http://gutenberg.spiegel.de/buch/negermarchen-6909',
                'wilhelm': 'http://gutenberg.spiegel.de/buch/chinesische-marchen-6252',
                'bechstein': 'http://gutenberg.spiegel.de/buch/marchen-7468',
-               'alberti': 'http://gutenberg.spiegel.de/buch/japanische-marchen-2426'}
+               'alberti': 'http://gutenberg.spiegel.de/buch/japanische-marchen-2426',
+               'ruland': 'http://gutenberg.spiegel.de/buch/morgenlandische-marchen-7835'}
 
-current_collection_name = 'andersen'
+current_collection_name = 'ruland'
 r = CollectionRequest(collections[current_collection_name], current_collection_name)
 documents = r.run_scraping()
 file_path = '../data/collections/collection_' + current_collection_name + ".txt"
