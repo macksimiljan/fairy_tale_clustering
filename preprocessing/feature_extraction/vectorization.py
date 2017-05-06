@@ -6,16 +6,36 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 class Vectorization(object):
 
-    def __init__(self, matrix_shape=(3000, 100), matrix_extension_words=500, matrix_extension_docs=50):
+    def __init__(self, matrix_shape=(3000, 100), growth_words=500, growth_docs=50):
         self.__matrix = zeros(matrix_shape, dtype=int16)
+        self.__lengths = zeros((int(round(matrix_shape[0] / 15)), matrix_shape[1]), dtype=int16)
         self.__lexicon_words = Lexicon()
         self.__lexicon_doc = Lexicon()
         self.__fairy_tale_counter = 0
-        self.__matrix_extension_words = matrix_extension_words
-        self.__matrix_extension_docs = matrix_extension_docs
+        self.__max_size_document = 0
+        self.__growth_words = growth_words
+        self.__growth_docs = growth_docs
+
+    def add_sentence_length_vector(self, length_vector, document_name):
+        doc_id = self.__lexicon_doc.add_entry(document_name)
+        current_shape = self.__lengths.shape
+        if current_shape[0] <= len(length_vector):
+            missing = len(length_vector) - current_shape[0]
+            extension = ((0, missing * 2), (0, 0))
+            self.__lengths = pad(self.__lengths, extension, 'constant', constant_values=(0))
+        if current_shape[1] <= doc_id:
+            extension = ((0, 0), (0, self.__growth_docs))
+            self.__lengths = pad(self.__lengths, extension, 'constant', constant_values=(0))
+        for sentence_number in range(0, len(length_vector)):
+            self.__lengths[sentence_number, doc_id] = length_vector[sentence_number]
+        if len(length_vector) > self.__max_size_document:
+            self.__max_size_document = len(length_vector)
 
     def add_document(self, words, document_name='fairy tale'):
-        doc_id = self.__lexicon_doc.add_entry(document_name + ' #' + str(self.__fairy_tale_counter))
+        document_name = document_name + '#' + str(self.__fairy_tale_counter)\
+            if document_name == 'fairy tale'\
+            else document_name
+        doc_id = self.__lexicon_doc.add_entry(document_name)
         self.__fairy_tale_counter += 1
         for word in words:
             word_id = self.__lexicon_words.add_entry(word)
@@ -36,11 +56,11 @@ class Vectorization(object):
             self.__add_further_column()
 
     def __add_further_rows(self):
-        extension = ((0, self.__matrix_extension_words), (0, 0))
+        extension = ((0, self.__growth_words), (0, 0))
         self.__matrix = pad(self.__matrix, extension, 'constant', constant_values = (0))
 
     def __add_further_column(self):
-        extension = ((0, 0), (0, self.__matrix_extension_docs))
+        extension = ((0, 0), (0, self.__growth_docs))
         self.__matrix = pad(self.__matrix, extension, 'constant', constant_values=(0))
 
     def get_count_matrix(self):
@@ -91,3 +111,36 @@ class Vectorization(object):
         transformer = TfidfTransformer()
         tfidf = transformer.fit_transform(inverse_matrix)
         return round(tfidf.toarray(), 3)
+
+    def export_results(self, path, collection_name):
+        path = path + collection_name + '_' if path.endswith('/') else path + '/' + collection_name + '_'
+        self.__export_lexicons(path)
+        self.write_count_matrix(path + 'count_matrix.csv')
+        self.__export_tfidf_matrix(path + 'tfidf_matrix.csv')
+        self.__export_sentence_lengths(path + 'lengths.csv')
+
+    def __export_lexicons(self, path):
+        self.__lexicon_words.store(path + 'lexicon_words.csv')
+        self.__lexicon_doc.store(path + 'lexicon_documents.csv')
+
+    def __export_tfidf_matrix(self, path):
+        matrix = self.get_tfidf_matrix().transpose()
+        number_documents = len(self.__lexicon_doc)
+        number_words = len(self.__lexicon_words)
+        with open(path, "w") as file:
+            for word_id in range(0, number_words):
+                row = ''
+                for doc_id in range(0, number_documents):
+                    tfidf = matrix[word_id, doc_id]
+                    row += str(tfidf) + '\t'
+                file.write(row[:-1] + '\n')
+
+    def __export_sentence_lengths(self, path):
+        number_documents = len(self.__lexicon_doc)
+        with open(path, "w") as file:
+            for sentence_number in range(0, self.__max_size_document):
+                row = ''
+                for doc_id in range(0, number_documents):
+                    length = self.__lengths[sentence_number, doc_id]
+                    row += str(length) + '\t'
+                file.write(row[:-1] + '\n')
