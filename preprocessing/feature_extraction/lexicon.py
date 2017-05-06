@@ -28,7 +28,7 @@ class Lexicon(object):
     def store(self, file_path):
         with open(file_path, "w") as file:
             for e_id, entry in self.__id2entry.items():
-                file.write(str(e_id) + '\t' + entry)
+                file.write(str(e_id) + '\t' + entry + '\n')
 
     def print(self):
         for e_id, entry in self.__id2entry.items():
