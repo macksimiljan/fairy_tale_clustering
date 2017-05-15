@@ -1,0 +1,5 @@
+1	{'headline': 'coll1.doc1', 'text': 'Es war einmal ein Prinz, der eine Prinzessin rettete. Sie war sehr hübsch. Und wenn sie nicht gestorben sind, so leben sie noch heute.'}
+2	{'headline': 'coll1.doc2', 'text': 'Es war einmal ein Prinz, der sehr reich war und nicht entscheidungsfreudig. Er hatte drei Wünsche frei. Und wenn er nicht gestorben ist, so überlegt er noch heute.'}
+3	{'headline': 'coll2.doc1', 'text': 'Vor langer Zeit lebte ein Esel. Er war grau. Aber er hatte goldene Zähne. Er aß gerne Karotten. Am liebsten Karotten aus dem fernen Osten.'}
+4	{'headline': 'coll2.doc2', 'text': 'Vor vielen Jahren lebte ein Esel. Er war wunderschön. Aber er hatte faule Zähne. Er aß gerne Karotten. Am liebsten Karotten aus dem nahen Westen.'}
+5	{'headline': 'coll3.doc1', 'text': 'Vor vielen Jahren lebte ein Prinz, der eine Prinzessin gerettet haben soll. Sie war sehr hübsch. Und wenn sie noch heute leben, so sind sie glücklich.'}
