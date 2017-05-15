@@ -8,21 +8,25 @@ class DocumentCleaning(object):
 
     __LANG = 'german'
 
-    def __init__(self, document):
+    def __init__(self, document, stopword_filter=True):
         self.__stopwords = set(nltk.corpus.stopwords.words(DocumentCleaning.__LANG))
-        self.__document = document
-        self.__stopword_filter = True
+        self.__document = self.__replace_quotation_marks(document)
+        self.__stopword_filter = stopword_filter
         self.__sentences = sent_tokenize(self.__document, DocumentCleaning.__LANG)
 
-    def build_stemmed_word_vector(self):
+    def map_to_stemmed_words(self):
         cleaned_document = []
         for sentence in self.__sentences:
             stemmed_sentence = self.__tokenize_and_stem(sentence)
             cleaned_document.extend(stemmed_sentence)
         return cleaned_document
 
-    def build_sentence_length_vector(self):
+    def map_to_sentence_length(self):
         return [len(sentence) for sentence in self.__sentences]
+
+    def __replace_quotation_marks(self, document):
+        d = document.replace('»', '\"')
+        return d.replace('«', '\"')
 
     def __tokenize_and_stem(self, sentence):
         filtered_stems = []

@@ -1,13 +1,30 @@
 from preprocessing.feature_extraction.document_cleaning import DocumentCleaning
-from preprocessing.feature_extraction.lexicon import Lexicon
+from preprocessing.feature_extraction.vectorization import Vectorization
 
-text = "In den alten Zeiten, wo das Wünschen noch geholfen hat, lebte ein König, dessen Töchter waren alle schön, aber die jüngste war so schön, daß die Sonne selber, die doch so vieles gesehen hat, sich verwunderte, so oft sie ihr ins Gesicht schien. Nahe bei dem Schlosse des Königs lag ein großer dunkler Wald, und in dem Walde unter einer alten Linde war ein Brunnen; wenn nun der Tag sehr heiß war, so ging das Königskind hinaus in den Wald und setzte sich an den Rand des kühlen Brunnens, und wenn sie Langeweile hatte, so nahm sie eine goldene Kugel, warf sie in die Höhe und fing sie wieder; und das war ihr liebstes Spielwerk. Nun trug es sich einmal zu, daß die goldene Kugel der Königstochter nicht in ihr Händchen fiel, das sie in die Höhe gehalten hatte, sondern vorbei auf die Erde schlug und geradezu ins Wasser hineinrollte. Die Königstochter folgte ihr mit den Augen nach, aber die Kugel verschwand, und der Brunnen war tief, so tief, daß man keinen Grund sah. Da fing sie an zu weinen und weinte immer lauter und konnte sich gar nicht trösten. Und wie sie so klagte, rief ihr jemand zu: \"Was hast du vor, Königstochter, du schreist ja, daß sich ein Stein erbarmen möchte.\" Sie sah sich um, woher die Stimme käme, da erblickte sie einen Frosch, der seinen dicken häßlichen Kopf aus dem Wasser streckte. \"Ach, du bist's, alter Wasserpatscher,\" sagte sie, \"ich weine über meine goldene Kugel, die mir in den Brunnen hinabgefallen ist.\" \"Sei still und weine nicht,\" antwortete der Frosch, \"ich kann wohl Rat schaffen, aber was giebst du mir, wenn ich dein Spielwerk wieder heraushole?\" \"Was du haben willst, lieber Frosch,\" sagte sie, \"meine Kleider, meine Perlen und Edelsteine, auch noch die goldene Krone, die ich trage.\" "
-dc = DocumentCleaning(text)
-lengths = dc.build_sentence_length_vector()
-words_in_document = dc.build_stemmed_word_vector()
 
-lexicon = Lexicon()
-[lexicon.add_entry(word) for word in words_in_document]
-lexicon.print(1)
+collections = ['grimm', 'andersen', 'dietrich', 'wilhelm', 'bechstein', 'alberti', 'ruland']
 
-histo = lexicon.create_histogram()
+vectorization = Vectorization(matrix_shape=(5000, 1000), growth_words=500, growth_docs=50)
+for collection_name in collections:
+    print('reading', collection_name, '...')
+    path = '../../data/collections/collection_'+collection_name+'.txt'
+    collection = {}
+    with open(path, 'r') as f:
+        for line in f:
+            doc_hash = eval(line.split('\t')[1])
+            key = collection_name + '#' + doc_hash['headline']
+            collection[key] = doc_hash['text'].strip()
+
+    print('processing', collection_name, '(#fairy tales:', len(collection), ')...')
+    for headline, document in collection.items():
+        cleaning = DocumentCleaning(document)
+        lengths = cleaning.map_to_sentence_length()
+        vectorization.add_sentence_length_vector(lengths, headline)
+        words_in_document = cleaning.map_to_stemmed_words()
+        vectorization.add_document(words_in_document, headline)
+
+path = '../../data/vectorization/'
+name = str(collections).replace('[', '').replace(']', '').replace('\'', '').replace(', ', '_')
+print('calculating TF/IDF and exporting data to', path, '...')
+vectorization.export_results(path, name)
+

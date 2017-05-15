@@ -13,11 +13,13 @@ class CollectionRequest(object):
         self.__pages_per_collection = {'grimm': (4, 204), 'andersen': (2, 113),
                                        'alberti': (3, 26), 'bechstein': (2, 48),
                                        'dietrich': (4, 20), 'gelber': (2, 28),
-                                       'wilhelm': (3, 102), 'wenzig': (2, 35)}
+                                       'wilhelm': (3, 102), 'wenzig': (2, 35),
+                                       'ruland': (3, 81)}
         self.__locking_per_collection = {'grimm': 10, 'andersen': 10,
                                          'alberti': 5, 'bechstein': 7,
                                          'dietrich': 7, 'gelber': 7,
-                                         'wilhelm': 10, 'wenzig': 7}
+                                         'wilhelm': 10, 'wenzig': 7,
+                                         'ruland': 10}
 
     def run_scraping(self):
         pages = self.__pages_per_collection[self.__collection_name]
