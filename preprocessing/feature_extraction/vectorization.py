@@ -110,7 +110,7 @@ class Vectorization(object):
         inverse_matrix = matrix.transpose()
         transformer = TfidfTransformer()
         tfidf = transformer.fit_transform(inverse_matrix)
-        return round(tfidf.toarray(), 3)
+        return round(tfidf.toarray(), 6)
 
     def export_results(self, path, collection_name):
         path = path + collection_name + '_' if path.endswith('/') else path + '/' + collection_name + '_'

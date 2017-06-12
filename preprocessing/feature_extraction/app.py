@@ -2,7 +2,7 @@ from preprocessing.feature_extraction.document_cleaning import DocumentCleaning
 from preprocessing.feature_extraction.vectorization import Vectorization
 
 
-collections = ['grimm', 'andersen', 'dietrich', 'wilhelm', 'bechstein', 'alberti', 'ruland']
+collections = ['grimm'] # , 'andersen', 'dietrich', 'wilhelm', 'bechstein', 'alberti', 'ruland']
 
 vectorization = Vectorization(matrix_shape=(5000, 1000), growth_words=500, growth_docs=50)
 for collection_name in collections:
